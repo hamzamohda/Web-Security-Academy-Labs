@@ -1,0 +1,67 @@
+
+Web cache deception
+
+1) what is it ? ايش هي 
+  a bug where you trick the web cache to store a senstive content e.g. (profile page, bank details, ...etc) |
+
+2) why ? ليش تحدث
+  due to the diffrence in handling request by the cache server and the origin server     
+
+
+3) WCD 🆚 Web Cache Poisoning
+
+    WCD: trick the cache to store sensitive data 
+
+    Web Cache Poisoning: trick the cache to store malicious content that will be served to other users
+
+
+4) ⚙️ Web Cache Rules : 1- what can be cache  2- and for how long 
+
+  Cache Rules: used for the static content because it doesn't change frequently, unlike the Dynamic content which usally contain sensitive information
+
+  some of the rules:
+
+  Static file extension rules : e.g. (.js, .css, .......) 
+  Static Directories Rules: e.g. (/static/*)
+  Static File Name: e.g.  (/robots.txt)
+
+4) 🔑 Cache Keys 
+
+    When the cache get an HTTP request it should decided :
+    
+     1- do I have a cached response for this request ?
+     2- should forward it to the origin server ?
+     
+     and here come the cache keys which is mostly consist of: 
+     A) the /PATH 
+     B) Parameters of the request 
+     C) some HTTP headers 
+     
+     If the cache key matches a previous request then → the response is considered the same and is served from the cache, if not it will be forwarded to the origin server and then get cached.
+
+5) How to identify cached response ?
+
+    for that you need to inspect the HTTP response headers
+
+      X-Cache: HIT ----------> this means the repsone came from the cache server.
+      X-Cache: MISS ---------> this means the response came from the origin server.
+      X-Cache: DYNAMIC ------> this means Content is dynamically generated from the server, often not stored.
+      
+      Cache-Control: this header give important information fo the attacker for example if the value of this header is set to : public, max-age=3600, this indicates the attack might work, 
+      however if the header contain one or more of this values the attack won't work: private, max-age=600, no-cache, no-store, max-age=0
+
+
+
+
+6) 🧪 ATTACK
+
+    A) Find endpoint that return Dynamic content and sensitive information 
+    B) Identify the difference between server and cache in interpreting paths
+    C) craft a malicious URL to trick cache to store the dynamic content
+
+
+NOTE : use a cache buster to make sure the cached repsone doesn't get served to all the visitor of the URL like: /account?buster=11111
+
+
+
+		
